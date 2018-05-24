@@ -14,7 +14,7 @@ The personal boat menu can be opened with /pb (like the vehicle shop /pv command
   * esx_billing => https://github.com/FXServer-ESX/fxserver-esx_billing
   
 * Boat Garage
- * esx_eden_boatgarage => https://github.com/HumanTree92/esx_eden_boatgarage
+  * esx_eden_boatgarage => https://github.com/HumanTree92/esx_eden_boatgarage
 
 [INSTALLATION]
 
