@@ -1,13 +1,13 @@
 # esx_boatshop
+Boat Shop based on ESX
 
-I did not create the code.  I only edited the esx_vehicleshop code to create the new shop.  This code, unlike other versions of vehicleshop that I've seen, doesn't interfere with the original esx_vehicleshop.
+I did NOT create the Code. I only edited the esx_vehicleshop code to create this new shop. This code unlike most other versions out there do NOT interfere with the Original esx_vehicleshop.
+
+This Boat Shop works just like esx_vehicleshop. However tho instead of Players buying Cars they can Buy/Sell Boats. I created this because i couldn't find a Boat Shop Script & instead of waiting for others i went ahead & did it myself. 
 
 The personal boat menu can be opened with /pb (like the vehicle shop /pv command).
 
-[REQUIREMENTS]
-
-* Auto mode
-  * No need to download another resource
+# Requirement:
 
 * Player management (billing and boss actions)
   * esx_society => https://github.com/FXServer-ESX/fxserver-esx_society
@@ -16,7 +16,7 @@ The personal boat menu can be opened with /pb (like the vehicle shop /pv command
 * Boat Garage
   * esx_eden_boatgarage => https://github.com/HumanTree92/esx_eden_boatgarage
 
-[INSTALLATION]
+# Installation
 
 1) CD in your resources/[esx] folder
 2) Clone the repository
