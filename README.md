@@ -23,17 +23,12 @@ The personal boat menu can be opened with /pb (like the vehicle shop /pv command
   * [esx_eden_boatgarage](https://github.com/HumanTree92/esx_eden_boatgarage)
 
 # Download & Installation
-
-1) CD in your resources/[esx] folder
-2) Clone the repository
+1) Download the .zip.
+2) Extract the .zip or Open the .zip.
 3) Import `esx_boatshop.sql` in your database
-4) Add this in your `server.cfg`:
-
-```
-start esx_boatshop
-```
-5) If you want player management you have to set `Config.EnablePlayerManagement` to `true` in `config.lua`
-
+4) Place `esx_boatshop` in your ESX Directory
+5) Add `start esx_boatshop` to your server.cfg
+6) If you want player management you have to set `Config.EnablePlayerManagement` to `true` in `config.lua`
 
 # Credits/Original Code
 * [ESX-Org](https://github.com/ESX-Org)
