@@ -36,7 +36,7 @@ start esx_boatshop
 
 
 # Credits/Original Code
-* ESX-Org
+* [ESX-Org](https://github.com/ESX-Org)
   * [esx_vehicleshop](https://github.com/ESX-Org/esx_vehicleshop)
 
 # Other
