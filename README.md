@@ -36,6 +36,7 @@ The personal boat menu can be opened with /pb (like the vehicle shop /pv command
 
 # Other
 If you like this please check out some of my other stuff like
+* [esx_hospital](https://github.com/HumanTree92/esx_hospital)
 * [esx_extraitems](https://github.com/HumanTree92/esx_extraitems)
 * [esx_aircraftshop](https://github.com/HumanTree92/esx_aircraftshop)
 * [esx_boatshop](https://github.com/HumanTree92/esx_boatshop)
@@ -44,6 +45,7 @@ If you like this please check out some of my other stuff like
 * [esx_eden_garage](https://github.com/HumanTree92/esx_eden_garage)
 * [esx_panicbutton](https://github.com/HumanTree92/esx_panicbutton)
 * [FiveM_CustomMapAddons](https://github.com/HumanTree92/FiveM_CustomMapAddons)
+
 # Visit Velociti Entertainment
 * [TS3](http://www.velocitientertainment.com/ts3/)
 * [Discord](https://discord.gg/azEY2kU)
