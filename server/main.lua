@@ -6,7 +6,7 @@ local hasSqlRun  = false
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 TriggerEvent('esx_phone:registerNumber', 'boatdealer', _U('dealer_customers'), false, false)
-TriggerEvent('esx_society:registerSociety', 'boatdealer', _U('boat_dealer'), 'society_cardealer', 'society_cardealer', 'society_cardealer', {type = 'private'})
+TriggerEvent('esx_society:registerSociety', 'boatdealer', _U('boat_dealer'), 'society_boatdealer', 'society_boatdealer', 'society_boatdealer', {type = 'private'})
 
 function RemoveOwnedVehicle (plate)
 	MySQL.Async.execute('DELETE FROM owned_boats WHERE plate = @plate',
