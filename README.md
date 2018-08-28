@@ -8,7 +8,6 @@ This Boat Shop works just like esx_vehicleshop. However tho instead of Players b
 The personal boat menu can be opened with /pb (like the vehicle shop /pv command).
 
 # Requirement:
-
 * Auto mode (everyone can buy vehicles from the dealer)
   * No need to download another resource
 
@@ -36,6 +35,7 @@ The personal boat menu can be opened with /pb (like the vehicle shop /pv command
 
 # Other
 If you like this please check out some of my other stuff like
+* [esx_customui](https://github.com/HumanTree92/esx_customui)
 * [esx_hospital](https://github.com/HumanTree92/esx_hospital)
 * [esx_extraitems](https://github.com/HumanTree92/esx_extraitems)
 * [esx_aircraftshop](https://github.com/HumanTree92/esx_aircraftshop)
