@@ -19,6 +19,10 @@ INSERT INTO `job_grades` (job_name, grade, name, label, salary, skin_male, skin_
 	('boatdealer',3,'boss','Patron',0,'{}','{}')
 ;
 
+INSERT INTO `licenses` (type, label) VALUES
+  ('boating', "Boating License")
+;
+
 CREATE TABLE `boatdealer_boats` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`vehicle` varchar(255) NOT NULL,
@@ -53,7 +57,8 @@ CREATE TABLE `boat_categories` (
 );
 
 INSERT INTO `boat_categories` (name, label) VALUES
-	('boat','Boats')
+	('boat','Boats'),
+	('subs','Submersibles')
 ;
 
 CREATE TABLE `boats` (
@@ -65,18 +70,20 @@ CREATE TABLE `boats` (
 );
 
 INSERT INTO `boats` (name, model, price, category) VALUES
-	('Seashark','seashark',1500,'boat'),
-	('Seashark2','seashark2',1500,'boat'),
-	('Yacht Seashark','seashark3',1500,'boat'),
-	('Suntrap','suntrap',1500,'boat'),
-	('Dinghy','dinghy',2500,'boat'),
-	('Dinghy2 ','dinghy2',2500,'boat'),
-	('Yacht Dinghy','dinghy4',1500,'boat'),
-	('Tropic','tropic',10000,'boat'),
-	('Yacht Tropic','tropic2',10000,'boat'),
-	('Squalo','squalo',12000,'boat'),
-	('Yacht Toro','toro2',15000,'boat'),
-	('Toro','toro',15000,'boat'),
-	('Jetmax','jetmax',17500,'boat'),
-	('Voilier Marquis','marquis',45500,'boat')
+	('Dinghy 4Seat', 'dinghy', 25000, 'boat'),
+	('Dinghy 2Seat', 'dinghy2', 20000, 'boat'),
+	('Dinghy Yacht', 'dinghy4', 25000, 'boat'),
+	('Jetmax', 'jetmax', 30000, 'boat'),
+	('Marquis', 'marquis', 45000, 'boat'),
+	('Seashark', 'seashark', 10000, 'boat'),
+	('Seashark Yacht', 'seashark3', 10000, 'boat'),
+	('Speeder', 'speeder', 40000, 'boat'),
+	('Squalo', 'squalo', 32000, 'boat'),
+	('Suntrap', 'suntrap', 34000, 'boat'),
+	('Toro', 'toro', 38000, 'boat'),
+	('Toro Yacht', 'toro2', 38000, 'boat'),
+	('Tropic', 'tropic', 27000, 'boat'),
+	('Tropic Yacht', 'tropic2', 27000, 'boat'),
+	('Kraken', 'submersible2', 31000, 'subs'),
+	('Submarine', 'submersible', 29000, 'subs')
 ;

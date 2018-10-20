@@ -10,7 +10,7 @@ Locales['en'] = {
   ['staff_type']              = 'personal usage',
   ['buy_vehicle_shop']        = 'do you want to purchase %s for $%s?',
   ['buy_vehicle']             = 'buy vehicle',
-  ['boat_dealer']              = 'car Dealership',
+  ['boat_dealer']             = 'boat Dealership',
   ['create_bill']             = 'create bill',
   ['dealer_boss']             = 'car Dealer - Boss',
   ['delivered']               = 'the vehicle has been ~g~delivered~s~ to the dealer',
@@ -63,4 +63,5 @@ Locales['en'] = {
   ['have_withdrawn']          = 'you have withdrawn ~y~x%s~s~ ~b~%s~s~',
   ['have_deposited']          = 'you have deposited ~y~x%s~s~ ~b~%s~s~',
   ['boss_actions']            = 'boss actions',
+  ['buy_license']             = 'buy a license?',
 }
