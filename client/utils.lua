@@ -37,7 +37,7 @@ end
 function IsPlateTaken(plate)
 	local callback = 'waiting'
 
-	ESX.TriggerServerCallback('esx_boatshop:isPlateTaken', function (isPlateTaken)
+	ESX.TriggerServerCallback('esx_boatshop:isPlateTaken', function(isPlateTaken)
 		callback = isPlateTaken
 	end, plate)
 
