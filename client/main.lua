@@ -20,11 +20,10 @@ local Categories              = {}
 local Vehicles                = {}
 local LastVehicles            = {}
 local CurrentVehicleData      = nil
-local Licenses                = {}
 
 ESX                           = nil
 
-Citizen.CreateThread(function ()
+Citizen.CreateThread(function()
 	while ESX == nil do
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 		Citizen.Wait(0)
@@ -32,20 +31,13 @@ Citizen.CreateThread(function ()
 
 	Citizen.Wait(10000)
 
-	ESX.TriggerServerCallback('esx_boatshop:getCategories', function (categories)
+	ESX.TriggerServerCallback('esx_boatshop:getCategories', function(categories)
 		Categories = categories
 	end)
 
-	ESX.TriggerServerCallback('esx_boatshop:getVehicles', function (vehicles)
+	ESX.TriggerServerCallback('esx_boatshop:getVehicles', function(vehicles)
 		Vehicles = vehicles
 	end)
-end)
-
-RegisterNetEvent('esx_boatshop:loadLicenses')
-AddEventHandler('esx_boatshop:loadLicenses', function (licenses)
-	for i = 1, #licenses, 1 do
-		Licenses[licenses[i].type] = true
-	end
 end)
 
 RegisterNetEvent('esx:playerLoaded')
@@ -54,58 +46,61 @@ AddEventHandler('esx:playerLoaded', function(xPlayer)
 end)
 
 RegisterNetEvent('esx_boatshop:sendCategories')
-AddEventHandler('esx_boatshop:sendCategories', function (categories)
+AddEventHandler('esx_boatshop:sendCategories', function(categories)
 	Categories = categories
 end)
 
 RegisterNetEvent('esx_boatshop:sendVehicles')
-AddEventHandler('esx_boatshop:sendVehicles', function (vehicles)
+AddEventHandler('esx_boatshop:sendVehicles', function(vehicles)
 	Vehicles = vehicles
 end)
 
 function DeleteShopInsideVehicles()
 	while #LastVehicles > 0 do
 		local vehicle = LastVehicles[1]
-
 		ESX.Game.DeleteVehicle(vehicle)
 		table.remove(LastVehicles, 1)
 	end
 end
 
 function StartShopRestriction()
-
 	Citizen.CreateThread(function()
 		while IsInShopMenu do
 			Citizen.Wait(1)
-	
+			
 			DisableControlAction(0, 75,  true) -- Disable exit vehicle
 			DisableControlAction(27, 75, true) -- Disable exit vehicle
 		end
 	end)
-
 end
 
+-- Open Buy License Menu
 function OpenBuyLicenseMenu(zone)
 	ESX.UI.Menu.CloseAll()
 
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'shop_license', {
 		title = _U('buy_license'),
+		align = 'top-left',
 		elements = {
-			{ label = _U('yes') .. ' ($' .. Config.LicensePrice .. ')', value = 'yes' },
 			{ label = _U('no'), value = 'no' },
+			{ label = _U('yes', ('<span style="color: green;">%s</span>'):format((_U('generic_shopitem', ESX.Math.GroupDigits(Config.LicensePrice))))), value = 'yes' },
 		}
-	}, function (data, menu)
+	}, function(data, menu)
 		if data.current.value == 'yes' then
-			TriggerServerEvent('esx_boatshop:buyLicense')
+			ESX.TriggerServerCallback('esx_boatshop:buyLicense', function(bought)
+				if bought then
+					menu.close()
+					OpenShopMenu()
+				end
+			end)
 		end
-		menu.close()
-	end, function (data, menu)
+	end, function(data, menu)
 		menu.close()
 	end)
 end
 
+-- Open Shop Menu
 function OpenShopMenu()
-
 	IsInShopMenu = true
 
 	StartShopRestriction()
@@ -163,7 +158,7 @@ function OpenShopMenu()
 		title    = _U('boat_dealer'),
 		align    = 'top-left',
 		elements = elements
-	}, function (data, menu)
+	}, function(data, menu)
 		local vehicleData = vehiclesByCategory[data.current.name][data.current.value + 1]
 
 		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'shop_confirm', {
@@ -176,7 +171,7 @@ function OpenShopMenu()
 		}, function(data2, menu2)
 			if data2.current.value == 'yes' then
 				local playerData = ESX.GetPlayerData()
-					ESX.TriggerServerCallback('esx_boatshop:buyVehicle', function (hasEnoughMoney)
+					ESX.TriggerServerCallback('esx_boatshop:buyVehicle', function(hasEnoughMoney)
 						if hasEnoughMoney then
 							IsInShopMenu = false
 							
@@ -185,7 +180,7 @@ function OpenShopMenu()
 							
 							DeleteShopInsideVehicles()
 							
-							ESX.Game.SpawnVehicle(vehicleData.model, Config.Zones.ShopOutside.Pos, Config.Zones.ShopOutside.Heading, function (vehicle)
+							ESX.Game.SpawnVehicle(vehicleData.model, Config.Zones.ShopOutside.Pos, Config.Zones.ShopOutside.Heading, function(vehicle)
 								TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
 								
 								local newPlate     = GeneratePlate()
@@ -209,12 +204,10 @@ function OpenShopMenu()
 			elseif data2.current.value == 'no' then
 			end
 
-		end, function (data2, menu2)
+		end, function(data2, menu2)
 			menu2.close()
 		end)
-
-	end, function (data, menu)
-
+	end, function(data, menu)
 		menu.close()
 
 		DeleteShopInsideVehicles()
@@ -231,14 +224,14 @@ function OpenShopMenu()
 
 		IsInShopMenu = false
 
-	end, function (data, menu)
+	end, function(data, menu)
 		local vehicleData = vehiclesByCategory[data.current.name][data.current.value + 1]
 		local playerPed   = PlayerPedId()
 
 		DeleteShopInsideVehicles()
 		WaitForVehicleToLoad(vehicleData.model)
 
-		ESX.Game.SpawnLocalVehicle(vehicleData.model, Config.Zones.ShopInside.Pos, Config.Zones.ShopInside.Heading, function (vehicle)
+		ESX.Game.SpawnLocalVehicle(vehicleData.model, Config.Zones.ShopInside.Pos, Config.Zones.ShopInside.Heading, function(vehicle)
 			table.insert(LastVehicles, vehicle)
 			TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
 			FreezeEntityPosition(vehicle, true)
@@ -248,12 +241,11 @@ function OpenShopMenu()
 	DeleteShopInsideVehicles()
 	WaitForVehicleToLoad(firstVehicleData.model)
 
-	ESX.Game.SpawnLocalVehicle(firstVehicleData.model, Config.Zones.ShopInside.Pos, Config.Zones.ShopInside.Heading, function (vehicle)
+	ESX.Game.SpawnLocalVehicle(firstVehicleData.model, Config.Zones.ShopInside.Pos, Config.Zones.ShopInside.Heading, function(vehicle)
 		table.insert(LastVehicles, vehicle)
 		TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
 		FreezeEntityPosition(vehicle, true)
 	end)
-
 end
 
 function WaitForVehicleToLoad(modelHash)
@@ -277,6 +269,7 @@ function WaitForVehicleToLoad(modelHash)
 	end
 end
 
+-- Entered Marker
 AddEventHandler('esx_boatshop:hasEnteredMarker', function (zone)
 	if zone == 'ShopEntering' then
 		CurrentAction     = 'shop_menu'
@@ -301,8 +294,8 @@ AddEventHandler('esx_boatshop:hasEnteredMarker', function (zone)
 				model = GetEntityModel(vehicle)
 				plate = ESX.Math.Trim(GetVehicleNumberPlateText(vehicle))
 	
-				CurrentAction     = 'resell_vehicle'
-				CurrentActionMsg  = _U('sell_menu', vehicleData.name, ESX.Math.GroupDigits(resellPrice))
+				CurrentAction    = 'resell_vehicle'
+				CurrentActionMsg = _U('sell_menu', vehicleData.name, ESX.Math.GroupDigits(resellPrice))
 	
 				CurrentActionData = {
 					vehicle = vehicle,
@@ -316,11 +309,12 @@ AddEventHandler('esx_boatshop:hasEnteredMarker', function (zone)
 	end
 end)
 
-AddEventHandler('esx_boatshop:hasExitedMarker', function (zone)
+-- Exited Marker
+AddEventHandler('esx_boatshop:hasExitedMarker', function(zone)
 	if not IsInShopMenu then
 		ESX.UI.Menu.CloseAll()
 	end
-
+	
 	CurrentAction = nil
 end)
 
@@ -341,7 +335,7 @@ AddEventHandler('onResourceStop', function(resource)
 end)
 
 -- Create Blips
-Citizen.CreateThread(function ()
+Citizen.CreateThread(function()
 	local blip = AddBlipForCoord(Config.Zones.ShopEntering.Pos.x, Config.Zones.ShopEntering.Pos.y, Config.Zones.ShopEntering.Pos.z)
 
 	SetBlipSprite (blip, 410)
@@ -354,23 +348,29 @@ Citizen.CreateThread(function ()
 	EndTextCommandSetBlipName(blip)
 end)
 
--- Display markers
-Citizen.CreateThread(function ()
+-- Draw Markers
+Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
 
 		local coords = GetEntityCoords(PlayerPedId())
+		local canSleep = true
 
 		for k,v in pairs(Config.Zones) do
 			if(v.Type ~= -1 and GetDistanceBetweenCoords(coords, v.Pos.x, v.Pos.y, v.Pos.z, true) < Config.DrawDistance) then
+				canSleep = false
 				DrawMarker(v.Type, v.Pos.x, v.Pos.y, v.Pos.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, v.Size.x, v.Size.y, v.Size.z, Config.MarkerColor.r, Config.MarkerColor.g, Config.MarkerColor.b, 100, false, true, 2, false, false, false, false)
 			end
+		end
+		
+		if canSleep then
+			Citizen.Wait(500)
 		end
 	end
 end)
 
--- Enter / Exit marker events
-Citizen.CreateThread(function ()
+-- Activate Menu when in Markers
+Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
 
@@ -395,6 +395,10 @@ Citizen.CreateThread(function ()
 			HasAlreadyEnteredMarker = false
 			TriggerEvent('esx_boatshop:hasExitedMarker', LastZone)
 		end
+		
+		if not isInMarker then
+			Citizen.Wait(500)
+		end
 	end
 end)
 
@@ -406,30 +410,29 @@ Citizen.CreateThread(function()
 		if CurrentAction == nil then
 			Citizen.Wait(500)
 		else
-
 			ESX.ShowHelpNotification(CurrentActionMsg)
 
 			if IsControlJustReleased(0, Keys['E']) then
 				if CurrentAction == 'shop_menu' then
 					if Config.LicenseEnable then
-						if Licenses['boating'] ~= nil then
-							OpenShopMenu()
-						else
-							OpenBuyLicenseMenu()
-						end
+						ESX.TriggerServerCallback('esx_license:checkLicense', function(hasBoatingLicense)
+							if hasBoatingLicense then
+								OpenShopMenu()
+							else
+								OpenBuyLicenseMenu()
+							end
+						end, GetPlayerServerId(PlayerId()), 'boating')
 					else
 						OpenShopMenu()
 					end
 				elseif CurrentAction == 'resell_vehicle' then
 					ESX.TriggerServerCallback('esx_boatshop:resellVehicle', function(vehicleSold)
-
 						if vehicleSold then
 							ESX.Game.DeleteVehicle(CurrentActionData.vehicle)
 							ESX.ShowNotification(_U('boat_sold_for', CurrentActionData.label, ESX.Math.GroupDigits(CurrentActionData.price)))
 						else
 							ESX.ShowNotification(_U('not_yours'))
 						end
-
 					end, CurrentActionData.plate, CurrentActionData.model)
 				end
 				CurrentAction = nil

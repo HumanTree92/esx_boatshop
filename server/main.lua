@@ -1,4 +1,5 @@
-ESX              = nil
+ESX = nil
+
 local Categories = {}
 local Vehicles   = {}
 
@@ -42,36 +43,23 @@ MySQL.ready(function()
 	TriggerClientEvent('esx_boatshop:sendVehicles', -1, Vehicles)
 end)
 
-function LoadLicenses (source)
-	TriggerEvent('esx_license:getLicenses', source, function (licenses)
-		TriggerClientEvent('esx_boatshop:loadLicenses', source, licenses)
-	end)
-end
-
-if Config.LicenseEnable == true then
-	AddEventHandler('esx:playerLoaded', function (source)
-		LoadLicenses(source)
-	end)
-end
-
-RegisterServerEvent('esx_boatshop:buyLicense')
-AddEventHandler('esx_boatshop:buyLicense', function ()
-	local _source = source
+ESX.RegisterServerCallback('esx_boatshop:buyLicense', function(source, cb)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
-	if xPlayer.get('money') >= Config.LicensePrice then
+	if xPlayer.getMoney() >= Config.LicensePrice then
 		xPlayer.removeMoney(Config.LicensePrice)
 
-		TriggerEvent('esx_license:addLicense', _source, 'boating', function ()
-			LoadLicenses(_source)
+		TriggerEvent('esx_license:addLicense', source, 'boating', function()
+			cb(true)
 		end)
 	else
-		TriggerClientEvent('esx:showNotification', _source, _U('not_enough_money'))
+		TriggerClientEvent('esx:showNotification', source, _U('not_enough_money'))
+		cb(false)
 	end
 end)
 
 RegisterServerEvent('esx_boatshop:setVehicleOwned')
-AddEventHandler('esx_boatshop:setVehicleOwned', function (vehicleProps)
+AddEventHandler('esx_boatshop:setVehicleOwned', function(vehicleProps)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
 
@@ -81,20 +69,20 @@ AddEventHandler('esx_boatshop:setVehicleOwned', function (vehicleProps)
 		['@plate']   = vehicleProps.plate,
 		['@vehicle'] = json.encode(vehicleProps),
 		['@Type']    = 'boat'
-	}, function (rowsChanged)
+	}, function(rowsChanged)
 		TriggerClientEvent('esx:showNotification', _source, _U('boat_belongs', vehicleProps.plate))
 	end)
 end)
 
-ESX.RegisterServerCallback('esx_boatshop:getCategories', function (source, cb)
+ESX.RegisterServerCallback('esx_boatshop:getCategories', function(source, cb)
 	cb(Categories)
 end)
 
-ESX.RegisterServerCallback('esx_boatshop:getVehicles', function (source, cb)
+ESX.RegisterServerCallback('esx_boatshop:getVehicles', function(source, cb)
 	cb(Vehicles)
 end)
 
-ESX.RegisterServerCallback('esx_boatshop:buyVehicle', function (source, cb, vehicleModel)
+ESX.RegisterServerCallback('esx_boatshop:buyVehicle', function(source, cb, vehicleModel)
 	local xPlayer     = ESX.GetPlayerFromId(source)
 	local vehicleData = nil
 
@@ -113,7 +101,7 @@ ESX.RegisterServerCallback('esx_boatshop:buyVehicle', function (source, cb, vehi
 	end
 end)
 
-ESX.RegisterServerCallback('esx_boatshop:resellVehicle', function (source, cb, plate, model)
+ESX.RegisterServerCallback('esx_boatshop:resellVehicle', function(source, cb, plate, model)
 	local resellPrice = 0
 
 	-- calculate the resell price
@@ -134,14 +122,13 @@ ESX.RegisterServerCallback('esx_boatshop:resellVehicle', function (source, cb, p
 	MySQL.Async.fetchAll('SELECT * FROM owned_vehicles WHERE owner = @owner AND @plate = plate', {
 		['@owner'] = xPlayer.identifier,
 		['@plate'] = plate
-	}, function (result)
+	}, function(result)
 		if result[1] then -- does the owner match?
 			local vehicle = json.decode(result[1].vehicle)
 			if vehicle.model == model then
 				if vehicle.plate == plate then
 					xPlayer.addMoney(resellPrice)
 					RemoveOwnedVehicle(plate)
-					
 					cb(true)
 				else
 					print(('esx_boatshop: %s attempted to sell an vehicle with plate mismatch!'):format(xPlayer.identifier))
@@ -157,22 +144,22 @@ ESX.RegisterServerCallback('esx_boatshop:resellVehicle', function (source, cb, p
 	end)
 end)
 
-ESX.RegisterServerCallback('esx_boatshop:isPlateTaken', function (source, cb, plate)
+ESX.RegisterServerCallback('esx_boatshop:isPlateTaken', function(source, cb, plate)
 	MySQL.Async.fetchAll('SELECT * FROM owned_vehicles WHERE plate = @plate', {
 		['@plate'] = plate
-	}, function (result)
+	}, function(result)
 		cb(result[1] ~= nil)
 	end)
 end)
 
-ESX.RegisterServerCallback('esx_boatshop:retrieveJobVehicles', function (source, cb, type)
+ESX.RegisterServerCallback('esx_boatshop:retrieveJobVehicles', function(source, cb, type)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	MySQL.Async.fetchAll('SELECT * FROM owned_vehicles WHERE owner = @owner AND type = @type AND job = @job', {
 		['@owner'] = xPlayer.identifier,
 		['@type'] = type,
 		['@job'] = xPlayer.job.name
-	}, function (result)
+	}, function(result)
 		cb(result)
 	end)
 end)
